@@ -3,9 +3,7 @@ package controller;
 import models.*;
 import java.awt.Color;
 
-public class SettingArea{
-	
-	public Canvas selectedObject;
+public class SettingArea implements Observer{
 	
 	private SettingArea() {}
 	
@@ -16,20 +14,12 @@ public class SettingArea{
 		return singletonHelper.INSTANCE;
 	}
 	
-	//called when canvas object updated
-	public void objectUpdate(Canvas currentObject) {
-		selectedObject=currentObject;
+	@Override
+	public void update(int x,int y,int width,int height) {
+	//update when size changed
+		
+		
 	}
 	
-	public void sizeChanged(int newWidth, int newHeight) {
-		//update EditorArea
-	}
-
-	public void colorChanged(Color Colors) {
-		//update EditorArea
-	}
-	
-	
-
 }
 
