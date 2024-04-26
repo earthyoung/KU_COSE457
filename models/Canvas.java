@@ -1,6 +1,8 @@
 package models;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Observer;
+
 public abstract class Canvas implements Subject{
 	class Message{
 		int x,y,width,height;
@@ -29,12 +31,12 @@ public abstract class Canvas implements Subject{
         this.height = height;
         this.message = new Message(x,y,width,height);
     }
-    
+
     @Override
     public void register(Observer obj) {
     	if(!observers.contains(obj))observers.add(obj);
     }
-    
+
     @Override
     public void unregister(Observer obj){
     	observers.remove(obj);
@@ -43,7 +45,8 @@ public abstract class Canvas implements Subject{
     @Override
     public void notifyObservers() {
     	for(Observer observer:observers) {
-    		observer.update(message.x,message.y,message.width,message.height);
+            observer.update(null, message);
+//    		observer.update(message.x,message.y,message.width,message.height);
     	}
     }
 

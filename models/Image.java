@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Observer;
+
 public class Image extends Canvas {
 
     private String path;
@@ -24,4 +26,13 @@ public class Image extends Canvas {
         this.path = path;
     }
 
+    @Override
+    public void register(Observer obj) {
+
+    }
+
+    @Override
+    public void unregister(Observer obj) {
+
+    }
 }

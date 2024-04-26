@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Observer;
+
 public class Text extends Canvas {
 
     private String string;
@@ -24,4 +26,13 @@ public class Text extends Canvas {
         this.string = string;
     }
 
+    @Override
+    public void register(Observer obj) {
+
+    }
+
+    @Override
+    public void unregister(Observer obj) {
+
+    }
 }
