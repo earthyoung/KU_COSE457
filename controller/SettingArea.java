@@ -1,14 +1,13 @@
 package controller;
 
-import java.util.Observable;
-import java.util.Observer;
+import models.Observer;
 
 public class SettingArea implements Observer {
 	
 	private SettingArea() {}
 
-	@Override
-	public void update(Observable o, Object arg) {
+
+	public void update(int x, int y, int height, int width) {
 
 	}
 
