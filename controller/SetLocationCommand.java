@@ -3,10 +3,10 @@ import models.*;
 
 public class SetLocationCommand implements Command{
 
-	Canvas cans;
+	TShape cans;
 	int cX,cY;
-	public SetLocationCommand(int x,int y,Canvas canvas) {
-		cans=canvas;
+	public SetLocationCommand(int x, int y, TShape TShape) {
+		cans= TShape;
 		cX=x;
 		cY=y;
 	}

@@ -4,11 +4,11 @@ import models.*;
 
 public class SetSizeCommand implements Command {
 	
-	Canvas cans;
+	TShape cans;
 	int cWidth,cHeight;
 	
-	public SetSizeCommand(int width,int height,Canvas canvas) {
-		cans=canvas;
+	public SetSizeCommand(int width, int height, TShape TShape) {
+		cans= TShape;
 		cWidth=width;
 		cHeight=height;
 	}

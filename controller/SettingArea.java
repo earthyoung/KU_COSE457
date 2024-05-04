@@ -1,13 +1,18 @@
 package controller;
 
+import models.Observable;
 import models.Observer;
 
 public class SettingArea implements Observer {
 	
 	private SettingArea() {}
 
+	@Override
+	public void update(Observable o) {
 
-	public void update(int x, int y, int height, int width) {
+	}
+
+	public void initialize() {
 
 	}
 
