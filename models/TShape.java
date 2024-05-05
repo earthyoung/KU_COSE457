@@ -9,6 +9,9 @@ import java.awt.geom.AffineTransform;
 
 import models.TAnchor.EAnchors;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 abstract public class TShape implements Serializable, Cloneable, Observable {
 
     // attributes
@@ -99,6 +102,17 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
             return true;
         }
         return false;
+    }
+
+    public boolean intersects(double x1, double y1, double x2, double y2) {
+        double maxX = max(x1, x2);
+        double minX = min(x1, x2);
+        double maxY = max(y1, y2);
+        double minY = min(y1, y2);
+        double w = maxX - minX;
+        double h = maxY - minY;
+        Shape transformedShape = this.affineTransform.createTransformedShape(this.shape);
+        return transformedShape.intersects(minX, minY, w, h);
     }
 
     // draw

@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.security.Key;
 import java.util.Vector;
 
 
@@ -32,7 +33,7 @@ public class EditorArea extends JPanel {
 
     // association attribute
     private Constants.ETools selectedTool;
-    private TShape selectedShape;
+    private Vector<TShape> selectedShape;
     private TShape currentShape;
     private Transformer transformer;
 
@@ -58,6 +59,7 @@ public class EditorArea extends JPanel {
         this.bUpdated = false;
 
         this.shapes = new Vector<>();
+        this.selectedShape = new Vector<>();
 
         MouseHandler mouseHandler = new MouseHandler();
         this.addMouseListener(mouseHandler);
@@ -171,18 +173,23 @@ public class EditorArea extends JPanel {
         this.currentShape.addPoint(x, y);
     }
 
-    private void finishTransformation(int x, int y) {
+    private void finishTransformation(int x, int y, boolean isControlDown) {
         this.graphics2DBufferedImage.setPaintMode();  // 그림모드 - paintMode : 어떤 그림이 있던지 그냥 그리는
         this.transformer.finalize(x, y);
 
         // 이전 도형 Anchor 취소하기
-        if(this.selectedShape != null) {
-            this.selectedShape.setSelected(false);
+        if(this.selectedShape != null && !isControlDown) {
+            for(TShape shape : this.selectedShape) {
+                shape.setSelected(false);
+            }
+            this.selectedShape.clear();
         }
         if(!(this.currentShape instanceof TSelection)) {
             this.shapes.add(this.currentShape); // Vector add
-            this.selectedShape = this.currentShape;
-            this.selectedShape.setSelected(true);
+            if(!this.selectedShape.contains(this.currentShape)) {
+                this.selectedShape.add(this.currentShape);
+            }
+            this.selectedShape.get(0).setSelected(true);
         }
         this.repaint();	// 전체 그림을 다시 그린다
     }
@@ -199,18 +206,23 @@ public class EditorArea extends JPanel {
     private void changeSelection(int x, int y) {
         // erase previous selection
         if (this.selectedShape != null) {
-            this.selectedShape.setSelected(false);
+            for(TShape shape : this.selectedShape) {
+                shape.setSelected(false);
+            }
         }
         this.repaint();
 
         // draw anchors
-        this.selectedShape = this.onShape(x, y); // 상태를 유지하고 있어야 하기 때문에 밖으로 빼내야 한다.
         if(this.selectedShape != null) {
-            this.selectedShape.setSelected(true);
+            for(TShape shape : this.selectedShape) {
+                shape.setSelected(true);
+            }
 //			this.selectedShape.draw(this.graphics2DBufferedImage);
         }
         if(this.getShapefillColor() != null) {
-            this.selectedShape.setShapefillColor(this.getShapefillColor());
+            for(TShape shape : this.selectedShape) {
+                shape.setShapefillColor(this.getShapefillColor());
+            }
             this.setShapefillColor(null);
         }
     }
@@ -299,6 +311,17 @@ public class EditorArea extends JPanel {
         this.setShapeSize(f);
     }
 
+    public void addShape(int x, int y) {
+        TShape tShape = onShape(x, y);
+        if(tShape != null) {
+            this.selectedShape.add(tShape);
+            tShape.setSelected(true);
+        }
+        for(TShape shape : this.selectedShape) {
+            shape.setSelected(true);
+        }
+    }
+
     // 현재 창 닫고 기존 창 열기
     public void saveShapes() {
         for (TShape shape : this.shapes) {
@@ -384,8 +407,9 @@ public class EditorArea extends JPanel {
             this.setUpdated(true);
             this.shapes.add(this.copyShape); // Vector add
 
-            this.selectedShape = this.copyShape;
-            this.selectedShape.setSelected(true);
+            this.selectedShape.clear();
+            this.selectedShape.add(this.copyShape);
+            this.selectedShape.get(0).setSelected(true);
 
         }
         copyShape = null;
@@ -438,6 +462,10 @@ public class EditorArea extends JPanel {
 //    }
 
     private class MouseHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
+
+        private MouseHandler() {
+        }
+
         @Override
         public void mouseClicked(MouseEvent e) { // e.getButton() : 몇번 버튼인지 - 좌클릭:1/우클릭:3
             if (e.getButton() == MouseEvent.BUTTON1) { // MouseEvent.BUTTON1 : 왼쪽 버튼
@@ -447,29 +475,33 @@ public class EditorArea extends JPanel {
                     this.lButtonDoubleClicked(e);
                 }
             }
-            if(e.getButton() == MouseEvent.BUTTON3) {
+            if (e.getButton() == MouseEvent.BUTTON3) {
                 deletedShape(e.getX(), e.getY());
             }
         }
 
         private void lButtonClicked(MouseEvent e) {
-            if (eDrawingState == EDrawingState.eIdle) { // 아무것도 안하고 있으면 그림을 그리기 시작해야 함
-                // 도형 클릭 시 anchor 그리기 ( Anchor 그리기 : selection이 되어야 한다. 그림을 그리는 것은 2번째 이다.)
-                changeSelection(e.getX(), e.getY());
-                // polygon 그리기
-                if (selectedTool.getETransformationStyle() == Constants.ETransformationStyle.eNpoint) {
-                    prepareTransformation(e.getX(), e.getY());
-                    eDrawingState = EDrawingState.eNPointTransformation;
-                }
+            if(e.isControlDown()) {
+                addShape(e.getX(), e.getY());
+            } else {
+                if (eDrawingState == EDrawingState.eIdle) { // 아무것도 안하고 있으면 그림을 그리기 시작해야 함
+                    // 도형 클릭 시 anchor 그리기 ( Anchor 그리기 : selection이 되어야 한다. 그림을 그리는 것은 2번째 이다.)
+                    changeSelection(e.getX(), e.getY());
+                    // polygon 그리기
+                    if (selectedTool.getETransformationStyle() == Constants.ETransformationStyle.eNpoint) {
+                        prepareTransformation(e.getX(), e.getY());
+                        eDrawingState = EDrawingState.eNPointTransformation;
+                    }
 
-            } else if (eDrawingState == EDrawingState.eNPointTransformation) {
-                continueTransformation(e.getX(), e.getY());
+                } else if (eDrawingState == EDrawingState.eNPointTransformation) {
+                    continueTransformation(e.getX(), e.getY());
+                }
             }
         }
 
         private void lButtonDoubleClicked(MouseEvent e) {
             if (eDrawingState == EDrawingState.eNPointTransformation) {
-                finishTransformation(e.getX(), e.getY());
+                finishTransformation(e.getX(), e.getY(), e.isControlDown());
                 eDrawingState = EDrawingState.eIdle;
             }
         }
@@ -503,7 +535,7 @@ public class EditorArea extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             if (eDrawingState == EDrawingState.e2PointTransformation) {
-                finishTransformation(e.getX(), e.getY());
+                finishTransformation(e.getX(), e.getY(), e.isControlDown());
                 eDrawingState = EDrawingState.eIdle;
             }
         }
@@ -518,10 +550,8 @@ public class EditorArea extends JPanel {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) { // 역방향인지 정방향인지를 파악
-            System.out.println("[mouseWheelMoved]  " + e.getWheelRotation());
         }
+
     }
-
-
 
 }
