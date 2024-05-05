@@ -4,7 +4,9 @@ import models.Observable;
 import models.Observer;
 
 public class SettingArea implements Observer {
-	
+
+	private static SettingArea instance;
+
 	private SettingArea() {}
 
 	@Override
@@ -16,11 +18,11 @@ public class SettingArea implements Observer {
 
 	}
 
-	private static class singletonHelper{
-		private static final SettingArea INSTANCE=new SettingArea();
-	}
 	public static SettingArea getInstance() {
-		return singletonHelper.INSTANCE;
+		if (instance == null) {
+			instance = new SettingArea();
+		}
+		return instance;
 	}
 
 }

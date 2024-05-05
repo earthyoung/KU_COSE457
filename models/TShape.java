@@ -1,126 +1,133 @@
 package models;
-import java.awt.*;
+
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.io.Serializable;
 import java.awt.geom.AffineTransform;
-import java.util.List;
-import java.util.ArrayList;
 
-public abstract class TShape implements Observable {
-	class Message{
-		double x,y,width,height;
-		public Message(double x,double y,double width,double height) {
-			this.x=x;
-			this.y=y;
-			this.width=width;
-			this.height=height;
-		}
-	}
-	protected List<Observer> observers;
-	protected Message message;
-	
-    protected double x = 0;
-    protected double y = 0;
-    protected double z = 0;
-    protected double width = 0;
-    protected double height = 0;
-    protected Shape shape;
-    private TShape tShape;
+import models.TAnchor.EAnchors;
+
+abstract public class TShape implements Serializable, Cloneable, Observable {
+
+    // attributes
+    private static final long serialVersionUID = 1L;
+
+    // graphics Attribute
+    private boolean bSelected;  // 현재 도형의 상태
+    private Color shapeColor;
+    private float size;
+    private Color shapefillColor = null;
+
+    // Components: 부품들, /코/입 과 같이 내가 가진 것들
+    protected Shape shape; // 점의 집합으로 그림을 그리는 JDK에서 만들어 넣는 2차원 그림을 그릴 수 있는 일반적인 형태
     private AffineTransform affineTransform;
-    private TAnchor tAnchor;
+    private TAnchor anchors;
 
-    public TShape() {}
-    public TShape(double x, double y, double width, double height) {
-        this.observers=new ArrayList<>();
-    	this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.message = new Message(x,y,width,height);
+    // setters and getters : 속성을 단순 변경하거나 읽는 것들, 직접 노출하지 않고 사용
+    public boolean isSelected() {
+        return this.bSelected;
+    }
+    public void setSelected(boolean bSelected) {
+        this.bSelected = bSelected;
+    }
+    public EAnchors getSelectedAnchor() {return this.anchors.getSelecetedAnchor();}
+
+    public Color getShapeColor() {
+        return shapeColor;
+    }
+    public void setShapeColor(Color shapeColor) {
+        this.shapeColor = shapeColor;
+    }
+    public float getSize() {
+        return size;
+    }
+    public void setSize(float size) {
+        this.size = size;
+    }
+    public Color getShapefillColor() {
+        return shapefillColor;
+    }
+    public void setShapefillColor(Color shapefillColor) {
+        this.shapefillColor = shapefillColor;
+    }
+    public int getCenterX() {
+        return (int) this.shape.getBounds2D().getCenterX();
+    }
+    public int getCenterY() {
+        return (int) this.shape.getBounds2D().getCenterY();
     }
 
-    public void register(Observer obj) {
-    	if(!observers.contains(obj))observers.add(obj);
-    }
-
-    @Override
-    public void unregister(Observer obj){
-    	observers.remove(obj);
-    }
-    
-    @Override
-    public void notifyObservers() {
-    	for(Observer observer:observers) {
-    		observer.update(this);
-    	}
-    }
-
+    // transformer가 사용하기 위해서
     public AffineTransform getAffineTransform() {
-        return this.affineTransform;
+        return affineTransform;
+    }
+    public TAnchor getAnchor() {
+        return anchors;
     }
 
-    public TAnchor getTAnchor() {
-        return this.tAnchor;
+    // 생성자 : 나를 생성하거나 없앰
+    public TShape() {
+        this.affineTransform = new AffineTransform();
+        this.affineTransform.setToIdentity();
+
+        this.anchors = new TAnchor();
+        this.bSelected = false;
+    }
+    public abstract TShape clone();
+    public void initailize() {};
+
+    public TShape deepClone() throws CloneNotSupportedException {
+        TShape copy = (TShape) super.clone();
+        this.affineTransform = (AffineTransform) this.affineTransform.clone();
+
+        return copy;
     }
 
-    public double getX() {
-        return this.x;
+    // method : 실제 객체가 수행하는
+    public boolean contains(int x, int y) {
+        Shape transformedShape = this.affineTransform.createTransformedShape(this.shape);
+        if(isSelected()) {
+            if( this.anchors.contains(x, y)) {
+                return true;
+            }
+        }
+
+        if(transformedShape.contains(x, y)) {  // Anchor가 null일 때
+            this.anchors.setSelectedAnchor(EAnchors.eMove);
+            return true;
+        }
+        return false;
     }
 
-    public double getY() {
-        return this.y;
-    }
+    // draw
+    public void draw(Graphics2D graphics2D) {// graphics2D : 그림그리는 좌표를 가지고 있음
+        Shape transformedShape = this.affineTransform.createTransformedShape(this.shape);
+        graphics2D.setColor(this.getShapeColor());
+        graphics2D.setStroke(new BasicStroke((float) this.getSize()));
 
-    public double getWidth() {
-        return this.width;
-    }
+        if(this.getShapefillColor() != null) {
+            graphics2D.setColor(this.getShapefillColor());
+            graphics2D.fill(transformedShape);
+        }else {
+            graphics2D.draw(transformedShape);
+        }
 
-    public double getHeight() {
-        return this.height;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-        this.message.x = x;
-        notifyObservers();
-    }
-
-    public void setY(double y) {
-        this.y = y;
-        this.message.y = y;
-        notifyObservers();
-    }
-
-    public void setWidth(double width) {
-        this.width = width;
-        this.message.width = width;
-        notifyObservers();
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-        this.message.height = height;
-        notifyObservers();
-    }
-
-    public void move(double xAmount, double yAmount) {
-        this.x += xAmount;
-        this.y += yAmount;
-        notifyObservers();
-    }
-
-    public boolean isIncluded(double xPos, double yPos) {
-        if(xPos > this.x + this.width || xPos < this.x) {
-            return false;
-        } else return yPos <= this.y + this.height && yPos >= this.y;
-    }
-
-    public void draw(Graphics2D graphics2d) {
-        Color temp = graphics2d.getColor();
-        graphics2d.draw(this.shape);
-        graphics2d.setStroke(new BasicStroke(1));
+        if(isSelected()) {
+            graphics2D.setColor(Color.black);
+            this.anchors.draw(graphics2D, transformedShape.getBounds());
+        }
     }
 
     public abstract void prepareDrawing(int x, int y);
-
     public abstract void keepDrawing(int x, int y);
+    public void addPoint(int x, int y) {}
+
+    public void finalize(int x, int y) {
+        this.shape = this.affineTransform.createTransformedShape(this.shape);
+        this.affineTransform.setToIdentity(); // 초기화
+    }
+
 
 }

@@ -10,14 +10,19 @@ public class TEllipse extends TShape {
         this.shape = new Ellipse2D.Double();
     }
 
-    public TEllipse(double x, double y, double width, double height) {
-        this.observers=new ArrayList<>();
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.message = new Message(x,y,width,height);
+    @Override
+    public TShape clone() {
+        return new TEllipse();
     }
+
+//    public TEllipse(double x, double y, double width, double height) {
+//        this.observers=new ArrayList<>();
+//        this.x = x;
+//        this.y = y;
+//        this.width = width;
+//        this.height = height;
+//        this.message = new Message(x,y,width,height);
+//    }
 
     @Override
     public void prepareDrawing(int x, int y) {
@@ -32,4 +37,18 @@ public class TEllipse extends TShape {
     }
 
 
+    @Override
+    public void register(Observer obj) {
+
+    }
+
+    @Override
+    public void unregister(Observer obj) {
+
+    }
+
+    @Override
+    public void notifyObservers() {
+
+    }
 }

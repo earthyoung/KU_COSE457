@@ -15,7 +15,7 @@ public abstract class Transformer {
     public Transformer(TShape tShape) {
         this.tShape = tShape;
         this.affineTransform = tShape.getAffineTransform();
-        this.tAnchor = tShape.getTAnchor();
+        this.tAnchor = tShape.getAnchor();
     }
 
     public abstract void prepare(int x, int y);
