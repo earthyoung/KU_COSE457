@@ -34,7 +34,7 @@ public class EditorArea extends JPanel {
     private Constants.ETools selectedTool;
     private TShape selectedShape;
     private TShape currentShape;
-    private Transformer transformer ;
+    private Transformer transformer;
 
     private static EditorArea instance;
 
@@ -57,7 +57,7 @@ public class EditorArea extends JPanel {
         this.eDrawingState = EDrawingState.eIdle; // 초기 값
         this.bUpdated = false;
 
-        this.shapes = new Vector<TShape>();
+        this.shapes = new Vector<>();
 
         MouseHandler mouseHandler = new MouseHandler();
         this.addMouseListener(mouseHandler);
@@ -65,9 +65,9 @@ public class EditorArea extends JPanel {
         this.addMouseWheelListener(mouseHandler);
 
         // 추가
-        this.deleteShape = new Vector<TShape>();
-        this.closedShape = new Vector<TShape>();
-        this.imges = new Vector<Image>();
+        this.deleteShape = new Vector<>();
+        this.closedShape = new Vector<>();
+        this.imges = new Vector<>();
     }
 
     public void initialize() {
@@ -226,7 +226,6 @@ public class EditorArea extends JPanel {
                     cursor = new Cursor(Cursor.MOVE_CURSOR);
                     EAnchors eAnchor = this.currentShape.getSelectedAnchor();
                     switch(eAnchor) {
-                        case eRR:cursor = new Cursor(Cursor.HAND_CURSOR);    break;
 
                         case eNW: cursor = new Cursor(Cursor.NW_RESIZE_CURSOR); break;
                         case eWW: cursor = new Cursor(Cursor.W_RESIZE_CURSOR);  break;

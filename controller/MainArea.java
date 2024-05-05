@@ -15,8 +15,6 @@ public class MainArea extends JFrame {
     private static MainArea instance;
     private EditorArea editorArea;
 
-//    private UnderToolBar underToolBar;
-
     private MainArea() {
         this.addWindowListener(new JFrameWindowClosingEventHandler());
 
@@ -38,12 +36,8 @@ public class MainArea extends JFrame {
         this.editorArea = EditorArea.getInstance();
         this.add(editorArea, layoutManager.CENTER);
 
-//        this.underToolBar = new UnderToolBar();
-//        this.add(this.underToolBar, layoutManager.SOUTH);
-
         this.menuBar.associate(this.editorArea);
         this.toolBar.associate(this.editorArea);
-//        this.underToolBar.associate(this.editorArea);
     }
 
     public static MainArea getInstance() {
@@ -56,7 +50,6 @@ public class MainArea extends JFrame {
     public void initialize() { // new 다음에 무조건
         this.menuBar.initialize();
         this.toolBar.initialize();
-//        this.underToolBar.initialize();
         this.editorArea.initialize();
     }
 

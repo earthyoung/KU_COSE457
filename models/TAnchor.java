@@ -1,14 +1,9 @@
 package models;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.io.Serializable;
 import java.awt.geom.Point2D;
-import java.awt.BasicStroke;
-
-import java.awt.Rectangle;
+import java.io.Serializable;
 
 public class TAnchor implements Serializable  { // 9개의 동그라미가 존재한다
 
@@ -28,7 +23,6 @@ public class TAnchor implements Serializable  { // 9개의 동그라미가 존�
         eEE,
         eNE,
         eNN,
-        eRR,
 
         eMove
     }
@@ -95,7 +89,6 @@ public class TAnchor implements Serializable  { // 9개의 동그라미가 존�
                 case eEE: x = x + w;     y = y + h/2;  break;
                 case eNE: x = x + w;                   break;
                 case eNN: x = x + w/2;                 break;
-                case eRR: x = x + w/2;   y = y - h/2;  break;
                 default:                               break;
             }
             x = x - WIDTH/2;
@@ -164,9 +157,5 @@ public class TAnchor implements Serializable  { // 9개의 동그라미가 존�
         this.height = (int) (y3 - y1);
 
         return new Point2D.Double(x1, y1);
-    }
-    public void setRotateAnchorPoint() {
-
-
     }
 }

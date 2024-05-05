@@ -47,22 +47,27 @@ public class Resizer extends Transformer {
 
     protected void getResizeScale(int x, int y) {
         TAnchor.EAnchors eResizeAnchor = this.tAnchor.getResizeAnchor();
-        double w1 = px - cx; // ���� ������ width
-        double w2 = x - cx;  // �ٲ�
+        double w1 = px - cx;
+        double w2 = x - cx;
 
         double h1 = py - cy;
         double h2 = y - cy;
 
         switch (eResizeAnchor) {
-            case eNW: xScale = w2/w1;  yScale= h2/h1;  break;
-            case eWW: xScale = w2/w1; yScale= 1;      break;
-            case eSW: xScale = w2/w1;  yScale= h2/h1; break;
-            case eSS: xScale = 1;      yScale= h2/h1; break;
-            case eSE: xScale = w2/w1;  yScale= h2/h1;  break;
-            case eEE: xScale = w2/w1;  yScale= 1;      break;
-            case eNE: xScale = w2/w1; yScale= h2/h1;  break;
-            case eNN: xScale = 1;      yScale= h2/h1;  break;
-            default:  break;
+            case eNW, eSW, eSE, eNE -> {
+                xScale = w2 / w1;
+                yScale = h2 / h1;
+            }
+            case eWW, eEE -> {
+                xScale = w2 / w1;
+                yScale = 1;
+            }
+            case eSS, eNN -> {
+                xScale = 1;
+                yScale = h2 / h1;
+            }
+            default -> {
+            }
         }
     }
 
