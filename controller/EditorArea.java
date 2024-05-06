@@ -185,7 +185,9 @@ public class EditorArea extends JPanel {
             this.selectedShape.clear();
         }
         if(!(this.currentShape instanceof TSelection)) {
-            this.shapes.add(this.currentShape); // Vector add
+            if(!this.shapes.contains(this.currentShape)) {
+                this.shapes.add(this.currentShape); // Vector add
+            }
             if(!this.selectedShape.contains(this.currentShape)) {
                 this.selectedShape.add(this.currentShape);
             }
@@ -384,21 +386,23 @@ public class EditorArea extends JPanel {
 
     // 마우스 왼쪽 버튼 누르면 특정 도형 삭제
     public void deletedShape(int x, int y) {
-        int index = 0;
-        for (TShape shape : this.shapes) {
-            if (shape.contains(x, y)) {
-                break;
+        TShape shape = onShape(x, y);
+        System.out.println("this.shapes: " + this.shapes);
+        System.out.println("this.deleteShape: " + this.deleteShape);
+        System.out.println("shape: " + shape);
+        if(shape != null) {
+            int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                if(!this.deleteShape.contains(shape)) {
+                    this.deleteShape.add(shape);
+                }
+                this.shapes.remove(shape);
+                this.repaint(); // 다시 그리기
+            } else {
+                JOptionPane.showMessageDialog(null, "삭제 취소되었습니다.");
             }
-            index++;
         }
-        int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-            this.deleteShape.add(this.shapes.get(index));
-            this.shapes.remove(index);
-            this.repaint(); // 다시 그리기
-        } else {
-            JOptionPane.showMessageDialog(null, "삭제 취소되었습니다.");
-        }
+
     }
 
     // 붙여넣기
