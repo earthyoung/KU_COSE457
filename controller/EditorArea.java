@@ -374,12 +374,15 @@ public class EditorArea extends JPanel {
 
     // 선택된 도형 삭제하기
     public void delete() {
-        for (TShape shape : this.shapes) {
-            if(shape.isSelected() == true) {
+        Vector<TShape> toBeDeletedShape = new Vector<>();
+        for(TShape shape : this.selectedShape) {
+            if(!this.deleteShape.contains(shape)) {
                 this.deleteShape.add(shape);
-                this.shapes.remove(shape);
-                break;
+                toBeDeletedShape.add(shape);
             }
+        }
+        for(TShape shape : toBeDeletedShape) {
+            this.shapes.remove(shape);
         }
         this.repaint();
     }
@@ -387,16 +390,14 @@ public class EditorArea extends JPanel {
     // 마우스 왼쪽 버튼 누르면 특정 도형 삭제
     public void deletedShape(int x, int y) {
         TShape shape = onShape(x, y);
-        System.out.println("this.shapes: " + this.shapes);
-        System.out.println("this.deleteShape: " + this.deleteShape);
-        System.out.println("shape: " + shape);
         if(shape != null) {
             int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                if(!this.deleteShape.contains(shape)) {
-                    this.deleteShape.add(shape);
-                }
-                this.shapes.remove(shape);
+//                if(!this.deleteShape.contains(shape)) {
+//                    this.deleteShape.add(shape);
+//                }
+//                this.shapes.remove(shape);
+                delete();
                 this.repaint(); // 다시 그리기
             } else {
                 JOptionPane.showMessageDialog(null, "삭제 취소되었습니다.");
