@@ -14,7 +14,8 @@ public class MainArea extends JFrame {
 
     private static MainArea instance;
     private EditorArea editorArea;
-
+    private SettingArea settingArea;
+    
     private MainArea() {
         this.addWindowListener(new JFrameWindowClosingEventHandler());
 
@@ -35,6 +36,9 @@ public class MainArea extends JFrame {
 
         this.editorArea = EditorArea.getInstance();
         this.add(editorArea, layoutManager.CENTER);
+        
+        this.settingArea= SettingArea.getInstance();
+        this.add(settingArea, layoutManager.WEST);
 
         this.menuBar.associate(this.editorArea);
         this.toolBar.associate(this.editorArea);
