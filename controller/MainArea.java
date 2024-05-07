@@ -14,7 +14,6 @@ public class MainArea extends JFrame {
 
     private static MainArea instance;
     private EditorArea editorArea;
-
     private SettingArea settingArea;
     
     private MainArea() {
