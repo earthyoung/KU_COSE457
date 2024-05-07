@@ -45,7 +45,7 @@ public class TImage extends TShape {
 
     @Override
     public void register(Observer obj) {
-
+    	
     }
 
     @Override

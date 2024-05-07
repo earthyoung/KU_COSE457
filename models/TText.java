@@ -42,18 +42,5 @@ public class TText extends TShape {
         this.string = string;
     }
 
-    @Override
-    public void register(Observer obj) {
-
-    }
-
-    @Override
-    public void unregister(Observer obj) {
-
-    }
-
-    @Override
-    public void notifyObservers() {
-
-    }
+  
 }

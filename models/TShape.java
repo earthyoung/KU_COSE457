@@ -11,9 +11,16 @@ import models.TAnchor.EAnchors;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import java.util.List;
 
+import controller.SettingArea;
+
+import java.util.ArrayList;
 abstract public class TShape implements Serializable, Cloneable, Observable {
-
+	
+	private List<Observer> TShapeList=new ArrayList<>();
+	
+	
     // attributes
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +41,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     }
     public void setSelected(boolean bSelected) {
         this.bSelected = bSelected;
+        notifyObservers();
     }
     public EAnchors getSelectedAnchor() {return this.anchors.getSelecetedAnchor();}
 
@@ -42,18 +50,21 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     }
     public void setShapeColor(Color shapeColor) {
         this.shapeColor = shapeColor;
+        notifyObservers();
     }
     public float getSize() {
         return size;
     }
     public void setSize(float size) {
         this.size = size;
+        notifyObservers();
     }
     public Color getShapefillColor() {
         return shapefillColor;
     }
     public void setShapefillColor(Color shapefillColor) {
         this.shapefillColor = shapefillColor;
+        notifyObservers();
     }
     public int getCenterX() {
         return (int) this.shape.getBounds2D().getCenterX();
@@ -77,6 +88,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
 
         this.anchors = new TAnchor();
         this.bSelected = false;
+        this.register(SettingArea.getInstance());
     }
     public abstract TShape clone();
     public void initailize() {};
@@ -142,6 +154,24 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         this.shape = this.affineTransform.createTransformedShape(this.shape);
         this.affineTransform.setToIdentity(); // 초기화
     }
-
+    
+    
+    @Override
+    public void register(Observer obj) {
+    	if(!TShapeList.contains(obj))TShapeList.add(obj);
+    }
+    
+    @Override
+    public void unregister(Observer obj){
+    	TShapeList.remove(obj);
+    }
+    
+    @Override
+    public void notifyObservers() {
+    	if(TShapeList!=null)
+    	for(Observer observer:TShapeList) {
+    		observer.update(this);
+    	}
+    }
 
 }

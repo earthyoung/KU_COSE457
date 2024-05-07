@@ -36,18 +36,5 @@ public class TRectangle extends TShape {
         rectangle.setSize(x-rectangle.x,y-rectangle.y);
     }
 
-    @Override
-    public void register(Observer obj) {
-
-    }
-
-    @Override
-    public void unregister(Observer obj) {
-
-    }
-
-    @Override
-    public void notifyObservers() {
-
-    }
+   
 }

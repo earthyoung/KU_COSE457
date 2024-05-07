@@ -14,15 +14,6 @@ public class TLine extends TShape {
         return new TLine();
     }
 
-//    public TLine(double x, double y, double width, double height) {
-//        this.observers=new ArrayList<>();
-//        this.x = x;
-//        this.y = y;
-//        this.width = width;
-//        this.height = height;
-//        this.message = new Message(x,y,width,height);
-//    }
-
     @Override
     public void prepareDrawing(int x, int y) {
         Line2D line = (Line2D) this.shape;
@@ -34,19 +25,6 @@ public class TLine extends TShape {
         Line2D line = (Line2D) this.shape;
         line.setLine(line.getX1(),line.getY1(),x,y);
     }
-
-    @Override
-    public void register(Observer obj) {
-
-    }
-
-    @Override
-    public void unregister(Observer obj) {
-
-    }
-
-    @Override
-    public void notifyObservers() {
-
-    }
+    
+    
 }
