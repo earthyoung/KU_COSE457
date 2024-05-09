@@ -1,20 +1,16 @@
 package controller;
 
 import models.*;
+import javax.swing.*;
 
-public class SetSizeCommand implements Command {
+public class SetSizeCommand extends commandRoot{
 	
-	Canvas cans;
-	int cWidth,cHeight;
-	
-	public SetSizeCommand(int width,int height,Canvas canvas) {
-		cans=canvas;
-		cWidth=width;
-		cHeight=height;
+	public SetSizeCommand(TShape tshape, JTextField field) {
+		super(tshape, field);
+		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void execute() {
-		cans.setHeight(cWidth);
-		cans.setWidth(cHeight);
+		this.shape.setSize(Float.parseFloat(this.tfield.getText()));
 	}
 }
