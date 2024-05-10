@@ -36,19 +36,4 @@ public class TEllipse extends TShape {
         ellipse.setFrame(ellipse.getX(), ellipse.getY(), x - ellipse.getX(), y - ellipse.getY());
     }
 
-
-    @Override
-    public void register(Observer obj) {
-
-    }
-
-    @Override
-    public void unregister(Observer obj) {
-
-    }
-
-    @Override
-    public void notifyObservers() {
-
-    }
 }

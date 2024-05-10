@@ -193,6 +193,7 @@ public class EditorArea extends JPanel {
             }
             this.selectedShape.get(0).setSelected(true);
         }
+        this.currentShape.finalize(this.getX(),this.getY());
         this.repaint();	// 전체 그림을 다시 그린다
     }
 
