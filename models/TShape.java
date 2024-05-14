@@ -13,10 +13,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.List;
 
-<<<<<<< HEAD
-=======
 import controller.EditorArea;
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
 import controller.SettingArea;
 
 import java.util.ArrayList;
@@ -45,13 +42,8 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     }
     public void setSelected(boolean bSelected) {
         this.bSelected = bSelected;
-<<<<<<< HEAD
-        notifyObservers();
-=======
-        //System.out.println(this.affineTransform.toString());
         notifyObservers();
         EditorArea.getInstance().repaint();
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
     }
     public EAnchors getSelectedAnchor() {return this.anchors.getSelecetedAnchor();}
 
@@ -61,10 +53,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     public void setShapeColor(Color shapeColor) {
         this.shapeColor = shapeColor;
         notifyObservers();
-<<<<<<< HEAD
-=======
         EditorArea.getInstance().repaint();
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
     }
     public float getSize() {
         return size;
@@ -72,10 +61,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     public void setSize(float size) {
         this.size = size;
         notifyObservers();
-<<<<<<< HEAD
-=======
         EditorArea.getInstance().repaint();
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
     }
     public Color getShapefillColor() {
         return shapefillColor;
@@ -83,10 +69,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     public void setShapefillColor(Color shapefillColor) {
         this.shapefillColor = shapefillColor;
         notifyObservers();
-<<<<<<< HEAD
-=======
         EditorArea.getInstance().repaint();
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
     }
     public int getCenterX() {
         return (int) this.shape.getBounds2D().getCenterX();
@@ -187,8 +170,6 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         notifyObservers();
         //System.out.println(this.shape.getBounds2D().getMaxX()+","+this.shape.getBounds2D().getMaxY());
     }
-    
-    
     @Override
     public void register(Observer obj) {
     	if(!TShapeList.contains(obj))TShapeList.add(obj);
@@ -206,27 +187,5 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     		observer.update(this);
     	}
     }
-<<<<<<< HEAD
-    
-    
-    @Override
-    public void register(Observer obj) {
-    	if(!TShapeList.contains(obj))TShapeList.add(obj);
-    }
-    
-    @Override
-    public void unregister(Observer obj){
-    	TShapeList.remove(obj);
-    }
-    
-    @Override
-    public void notifyObservers() {
-    	if(TShapeList!=null)
-    	for(Observer observer:TShapeList) {
-    		observer.update(this);
-    	}
-    }
-=======
->>>>>>> 163fcca43c7bbe4dd5d1deda1411ff00e96b46c3
 
 }

@@ -1,4 +1,6 @@
-package models;
+package controller;
+
+import models.TShape;
 
 public class TText extends TShape {
 

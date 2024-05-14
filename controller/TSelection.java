@@ -1,4 +1,6 @@
-package models;
+package controller;
+
+import models.TShape;
 
 import java.awt.*;
 

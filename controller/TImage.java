@@ -1,4 +1,7 @@
-package models;
+package controller;
+
+import models.Observer;
+import models.TShape;
 
 public class TImage extends TShape {
 
