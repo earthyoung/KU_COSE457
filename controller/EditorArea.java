@@ -261,7 +261,54 @@ public class EditorArea extends JPanel {
 
         this.setCursor(cursor);
     }
+    
+    
+    private void swapShape(TShape oldShape,TShape newShape) {
+    	try {
+    		int index1=this.shapes.indexOf(oldShape);
+    		int index2=this.shapes.indexOf(newShape);
+    		this.shapes.set(index2, oldShape);
+    		this.shapes.set(index1, newShape);
+    		this.repaint();
+    	}
+    	catch(Exception E) {
+    		System.out.println(E);
+    	}
+    }
 
+    public void shapeToFront(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		int i=this.shapes.indexOf(tshape);
+    		if(i+1<this.shapes.size()) {
+    			
+    			swapShape(tshape,this.shapes.get(i+1));
+    	        
+    		}
+    	}
+    }
+    
+    public void shapeToBack(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		int i=this.shapes.indexOf(tshape);
+    		
+    		if(i>0) {
+    			swapShape(tshape,this.shapes.get(i-1));
+    		}
+    	}
+    }
+    
+    public void shapeToTop(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		swapShape(tshape,this.shapes.get(this.shapes.size()-1));
+    	}
+    }
+    
+    public void shapeToBottom(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		swapShape(tshape,this.shapes.get(0));
+    	}
+    }
+    
 
     /////////////////////////////////////////////////////////
     ////////////////////// 추가 기능 //////////////////////////

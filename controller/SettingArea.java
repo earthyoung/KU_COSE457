@@ -103,11 +103,37 @@ private static final long serialVersionUID = 1L;
         });
         this.add(check);
         
+        JButton toFront = new JButton("앞으로");
+        toFront.addActionListener(e -> {
+           EditorArea.getInstance().shapeToFront(t);
+        });
+        this.add(toFront);
+        
+        JButton toBack = new JButton("뒤로");
+        toBack.addActionListener(e -> {
+           EditorArea.getInstance().shapeToBack(t);
+        });
+        this.add(toBack);
+        
+        JButton toTop = new JButton("맨 앞으로");
+        toTop.addActionListener(e -> {
+           EditorArea.getInstance().shapeToTop(t);
+        });
+        this.add(toTop);
+        
+        JButton toBottom = new JButton("맨 뒤로");
+        toBottom.addActionListener(e -> {
+           EditorArea.getInstance().shapeToBottom(t);
+        });
+        this.add(toBottom);
+        
+        
         for(int i=0;i<this.getComponents().length;i++) {
 			this.getComponent(i).setVisible(false);
 		}
         
     }
+    
     
     private void changeX() {
     	commander.setCommand(new SetXCommand(t,xCoordField));
