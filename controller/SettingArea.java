@@ -102,6 +102,11 @@ private static final long serialVersionUID = 1L;
         	}
         });
         this.add(check);
+        
+        for(int i=0;i<this.getComponents().length;i++) {
+			this.getComponent(i).setVisible(false);
+		}
+        
     }
     
     private void changeX() {
@@ -132,6 +137,17 @@ private static final long serialVersionUID = 1L;
 		xCoordField.setText(""+t.getCenterX());
 		yCoordField.setText(""+t.getCenterY());
 		
+		if(t.isSelected()==false) {
+			
+			for(int i=0;i<SettingArea.getInstance().getComponents().length;i++) {
+				SettingArea.getInstance().getComponent(i).setVisible(false);
+			}
+			
+		}else {
+			for(int i=0;i<SettingArea.getInstance().getComponents().length;i++) {
+				SettingArea.getInstance().getComponent(i).setVisible(true);
+			}
+		}
 	}
     
 
