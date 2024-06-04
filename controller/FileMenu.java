@@ -91,7 +91,7 @@ public class FileMenu extends JMenu {
 
             objectOutputStream.writeObject(this.editorArea.getShapes());
 
-            objectOutputStream.writeObject(this.editorArea.getImges());
+            objectOutputStream.writeObject(this.editorArea.getImages());
             objectOutputStream.close();
 
             JOptionPane.showMessageDialog(null, "저장되었습니다!");

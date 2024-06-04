@@ -42,7 +42,6 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     }
     public void setSelected(boolean bSelected) {
         this.bSelected = bSelected;
-        //System.out.println(this.affineTransform.toString());
         notifyObservers();
         EditorArea.getInstance().repaint();
     }
@@ -171,8 +170,6 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         notifyObservers();
         //System.out.println(this.shape.getBounds2D().getMaxX()+","+this.shape.getBounds2D().getMaxY());
     }
-    
-    
     @Override
     public void register(Observer obj) {
     	if(!TShapeList.contains(obj))TShapeList.add(obj);
