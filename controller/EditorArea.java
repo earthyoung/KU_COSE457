@@ -186,6 +186,7 @@ public class EditorArea extends JPanel {
             }
             this.selectedShape.clear();
         }
+        
         if(!(this.currentShape instanceof TSelection)) {
             if(!this.shapes.contains(this.currentShape)) {
                 this.shapes.add(this.currentShape); // Vector add
@@ -194,6 +195,22 @@ public class EditorArea extends JPanel {
                 this.selectedShape.add(this.currentShape);
             }
             this.selectedShape.get(0).setSelected(true);
+        }else if(this.currentShape instanceof TSelection){
+        	TSelection selectionShape=(TSelection)this.currentShape;
+        	//System.out.println(selectionShape.getBounds());
+        	this.selectedShape.clear();
+        	for(TShape shape:this.shapes) {
+        		
+        		 if(selectionShape.contains(shape.getCenterX(), shape.getCenterY())) {
+        			 shape.setSelected(true);
+        			 this.selectedShape.add(shape);
+        		 }else {
+        			 shape.setSelected(false);
+        		 }
+        		
+        	}
+        	
+        	//x y width height
         }
         this.currentShape.finalize(this.getX(),this.getY());
         this.repaint();	// 전체 그림을 다시 그린다
@@ -205,7 +222,9 @@ public class EditorArea extends JPanel {
                 return shape;
             }
         }
+        
         return null;
+        
     }
 
     private void changeSelection(int x, int y) {
