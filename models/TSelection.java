@@ -8,6 +8,11 @@ public class TSelection extends TShape {
         this.shape = new Rectangle();
     }
 
+    public Rectangle getBounds() {
+    	return (Rectangle)this.shape.getBounds2D();
+    }
+    
+    
     @Override
     public TShape clone() {  // ���ο� ���� ����°��� �ƴ϶�, �ڽ��� ���� ��� ���� ����
         return new TSelection();
