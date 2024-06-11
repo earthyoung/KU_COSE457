@@ -165,10 +165,16 @@ public class EditorArea extends JPanel {
     private void keepTransformation(int x, int y) {
         // erase
         this.currentShape.draw(this.graphics2DBufferedImage);
+        
+        
         // draw
+        
         this.transformer.keepTransforming(x, y);
+        
         this.currentShape.draw(this.graphics2DBufferedImage);
         this.getGraphics().drawImage(this.bufferedImage, 0, 0, this);
+        
+        
     }
 
     private void continueTransformation(int x, int y) {
@@ -200,14 +206,12 @@ public class EditorArea extends JPanel {
         	//System.out.println(selectionShape.getBounds());
         	this.selectedShape.clear();
         	for(TShape shape:this.shapes) {
-        		
         		 if(selectionShape.contains(shape.getCenterX(), shape.getCenterY())) {
-        			 shape.setSelected(true);
         			 this.selectedShape.add(shape);
+        			 shape.setSelected(true);
         		 }else {
         			 shape.setSelected(false);
         		 }
-        		
         	}
         	
         	//x y width height
