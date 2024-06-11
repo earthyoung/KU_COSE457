@@ -41,10 +41,18 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         return this.bSelected;
     }
     public void setSelected(boolean bSelected) {
+    	if(this.bSelected==bSelected)return;
         this.bSelected = bSelected;
+        //System.out.println(getCenterX());
         notifyObservers();
         EditorArea.getInstance().repaint();
+        
     }
+    
+    public void setAffineTransform(AffineTransform affine) {
+    	this.affineTransform=affine;
+    }
+    
     public EAnchors getSelectedAnchor() {return this.anchors.getSelecetedAnchor();}
 
     public Color getShapeColor() {
