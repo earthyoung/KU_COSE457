@@ -2,12 +2,24 @@ package models;
 
 import java.awt.*;
 
+import controller.EditorArea;
+
 public class TSelection extends TShape {
 
     public TSelection() {
         this.shape = new Rectangle();
     }
 
+    public Rectangle getBounds() {
+    	return (Rectangle)this.shape.getBounds2D();
+    }
+    
+    @Override
+    public void setSelected(boolean bSelected) {
+        EditorArea.getInstance().repaint();
+    }
+    
+    
     @Override
     public TShape clone() {  // ���ο� ���� ����°��� �ƴ϶�, �ڽ��� ���� ��� ���� ����
         return new TSelection();

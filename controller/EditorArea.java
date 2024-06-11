@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 import java.security.Key;
 import java.util.Vector;
 
@@ -20,6 +21,7 @@ import java.util.Vector;
 public class EditorArea extends JPanel {
 
     // attributes
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // components
@@ -69,7 +71,7 @@ public class EditorArea extends JPanel {
         // 추가
         this.deleteShape = new Vector<>();
         this.closedShape = new Vector<>();
-        this.imges = new Vector<>();
+        this.images = new Vector<>();
     }
 
     public void initialize() {
@@ -114,7 +116,7 @@ public class EditorArea extends JPanel {
         for (TShape shape : this.shapes) {
             shape.draw(this.graphics2DBufferedImage); // 전체를 다시 그림
         }
-        for(Image img : this.imges) {
+        for(Image img : this.images) {
             this.graphics2DBufferedImage.drawImage(img, 0, 0, this);
             this.getGraphics().drawImage(img, 0, 0, this);
         }
@@ -163,10 +165,16 @@ public class EditorArea extends JPanel {
     private void keepTransformation(int x, int y) {
         // erase
         this.currentShape.draw(this.graphics2DBufferedImage);
+        
+        
         // draw
+        
         this.transformer.keepTransforming(x, y);
+        
         this.currentShape.draw(this.graphics2DBufferedImage);
         this.getGraphics().drawImage(this.bufferedImage, 0, 0, this);
+        
+        
     }
 
     private void continueTransformation(int x, int y) {
@@ -184,6 +192,7 @@ public class EditorArea extends JPanel {
             }
             this.selectedShape.clear();
         }
+        
         if(!(this.currentShape instanceof TSelection)) {
             if(!this.shapes.contains(this.currentShape)) {
                 this.shapes.add(this.currentShape); // Vector add
@@ -192,6 +201,20 @@ public class EditorArea extends JPanel {
                 this.selectedShape.add(this.currentShape);
             }
             this.selectedShape.get(0).setSelected(true);
+        }else if(this.currentShape instanceof TSelection){
+        	TSelection selectionShape=(TSelection)this.currentShape;
+        	//System.out.println(selectionShape.getBounds());
+        	this.selectedShape.clear();
+        	for(TShape shape:this.shapes) {
+        		 if(selectionShape.contains(shape.getCenterX(), shape.getCenterY())) {
+        			 this.selectedShape.add(shape);
+        			 shape.setSelected(true);
+        		 }else {
+        			 shape.setSelected(false);
+        		 }
+        	}
+        	
+        	//x y width height
         }
         this.currentShape.finalize(this.getX(),this.getY());
         this.repaint();	// 전체 그림을 다시 그린다
@@ -203,7 +226,9 @@ public class EditorArea extends JPanel {
                 return shape;
             }
         }
+        
         return null;
+        
     }
 
     private void changeSelection(int x, int y) {
@@ -259,7 +284,54 @@ public class EditorArea extends JPanel {
 
         this.setCursor(cursor);
     }
+    
+    
+    private void swapShape(TShape oldShape,TShape newShape) {
+    	try {
+    		int index1=this.shapes.indexOf(oldShape);
+    		int index2=this.shapes.indexOf(newShape);
+    		this.shapes.set(index2, oldShape);
+    		this.shapes.set(index1, newShape);
+    		this.repaint();
+    	}
+    	catch(Exception E) {
+    		System.out.println(E);
+    	}
+    }
 
+    public void shapeToFront(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		int i=this.shapes.indexOf(tshape);
+    		if(i+1<this.shapes.size()) {
+    			
+    			swapShape(tshape,this.shapes.get(i+1));
+    	        
+    		}
+    	}
+    }
+    
+    public void shapeToBack(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		int i=this.shapes.indexOf(tshape);
+    		
+    		if(i>0) {
+    			swapShape(tshape,this.shapes.get(i-1));
+    		}
+    	}
+    }
+    
+    public void shapeToTop(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		swapShape(tshape,this.shapes.get(this.shapes.size()-1));
+    	}
+    }
+    
+    public void shapeToBottom(TShape tshape) {
+    	if(this.shapes.contains(tshape)) {
+    		swapShape(tshape,this.shapes.get(0));
+    	}
+    }
+    
 
     /////////////////////////////////////////////////////////
     ////////////////////// 추가 기능 //////////////////////////
@@ -272,7 +344,7 @@ public class EditorArea extends JPanel {
     private Color shapColor = Color.black;
     private float shapeSize = 1;
     private TShape copyShape;
-    private Vector<Image> imges;
+    private Vector<Image> images;
 
     // getters & setters
     public int getPanelWidth() {return panelWidth;}
@@ -289,8 +361,8 @@ public class EditorArea extends JPanel {
     public float getShapeSize() {return shapeSize;}
     public void setShapeSize(float shapeSize) {this.shapeSize = shapeSize;}
 
-    public Vector<Image> getImges() {return imges;}
-    public void setImges(Vector<Image> imges) {this.imges = imges;}
+    public Vector<Image> getImages() {return images;}
+    public void setImages(Vector<Image> images) {this.images = images;}
 
     // method
     // 패널 사이즈 변경
@@ -463,7 +535,7 @@ public class EditorArea extends JPanel {
 //
 //        this.graphics2DBufferedImage.drawImage(img, 0, 0, this);
 //        this.getGraphics().drawImage(img, 0, 0, this);
-//        this.imges.add(img);
+//        this.images.add(img);
 //        this.setUpdated(true);
 //    }
 

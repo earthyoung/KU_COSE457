@@ -41,10 +41,18 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         return this.bSelected;
     }
     public void setSelected(boolean bSelected) {
+    	if(this.bSelected==bSelected)return;
         this.bSelected = bSelected;
+        //System.out.println(getCenterX());
         notifyObservers();
         EditorArea.getInstance().repaint();
+        
     }
+    
+    public void setAffineTransform(AffineTransform affine) {
+    	this.affineTransform=affine;
+    }
+    
     public EAnchors getSelectedAnchor() {return this.anchors.getSelecetedAnchor();}
 
     public Color getShapeColor() {
@@ -78,8 +86,9 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
         return (int) this.shape.getBounds2D().getCenterY();
     }
 
+    
     public void setNewCenter(int x,int y) {
-    	System.out.println(x+","+y);
+    	//System.out.println(x+","+y);
     	this.affineTransform.setToIdentity();
     	this.affineTransform.translate(x-getCenterX() , y-getCenterY());
     	this.shape = this.affineTransform.createTransformedShape(this.shape);
@@ -94,6 +103,7 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     public TAnchor getAnchor() {
         return anchors;
     }
+    
 
     // 생성자 : 나를 생성하거나 없앰
     public TShape() {
@@ -117,12 +127,14 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     // method : 실제 객체가 수행하는
     public boolean contains(int x, int y) {
         Shape transformedShape = this.affineTransform.createTransformedShape(this.shape);
+        
         if(isSelected()) {
             if( this.anchors.contains(x, y)) {
                 return true;
             }
         }
 
+        
         if(transformedShape.contains(x, y)) {  // Anchor가 null일 때
             this.anchors.setSelectedAnchor(EAnchors.eMove);
             return true;

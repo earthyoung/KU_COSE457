@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 
 import models.Observable;
 import models.Observer;
+import models.TSelection;
 import models.TShape;
+import java.util.Vector;
 
 public class SettingArea extends JPanel implements Observer{
 	
@@ -15,6 +17,9 @@ private static final long serialVersionUID = 1L;
 
 
 	TShape t;
+	private Vector<TShape> shapes=new Vector<>();
+	
+	
 	public CanvasInvoker commander=new CanvasInvoker();
 
 	private static SettingArea instance;
@@ -44,8 +49,13 @@ private static final long serialVersionUID = 1L;
             Color selectedColor = JColorChooser.showDialog(null, "색상 선택", currentColor); // 초기 색상을 검은색으로 설정
             if (selectedColor != null) {
                 // 여기에서 선택된 색상을 사용하는 로직을 구현합니다.
-            	commander.setCommand(new SetColorCommand(t,selectedColor));
-            	commander.runCommand();
+            	for(TShape shape:shapes) {
+            		if(shape.isSelected()) {
+            			commander.setCommand(new SetColorCommand(shape,selectedColor));
+                    	commander.runCommand();
+            		}
+            	}
+            	
             }
         });
         this.add(colorPickerButton);
@@ -56,8 +66,12 @@ private static final long serialVersionUID = 1L;
             Color selectedColor = JColorChooser.showDialog(null, "색상 선택", currentColor); // 초기 색상을 검은색으로 설정
             if (selectedColor != null) {
                 // 여기에서 선택된 색상을 사용하는 로직을 구현합니다.
-            	commander.setCommand(new SetFillColorCommand(t,selectedColor));
-            	commander.runCommand();
+            	for(TShape shape:shapes) {
+            		if(shape.isSelected()) {
+            			commander.setCommand(new SetFillColorCommand(shape,selectedColor));
+            			commander.runCommand();
+            		}
+            	}
             }
         });
         this.add(fillColorPickerButton);
@@ -93,7 +107,7 @@ private static final long serialVersionUID = 1L;
             }
         });
         this.add(yCoordField);
-        
+        /*
         check= new JCheckBox("선택",true);
         check.addActionListener(new ActionListener() {
         	@Override
@@ -102,36 +116,100 @@ private static final long serialVersionUID = 1L;
         	}
         });
         this.add(check);
+        */
+        JButton toFront = new JButton("앞으로");
+        toFront.addActionListener(e -> {
+           EditorArea.getInstance().shapeToFront(t);
+        });
+        this.add(toFront);
+        
+        JButton toBack = new JButton("뒤로");
+        toBack.addActionListener(e -> {
+           EditorArea.getInstance().shapeToBack(t);
+        });
+        this.add(toBack);
+        
+        JButton toTop = new JButton("맨 앞으로");
+        toTop.addActionListener(e -> {
+           EditorArea.getInstance().shapeToTop(t);
+        });
+        this.add(toTop);
+        
+        JButton toBottom = new JButton("맨 뒤로");
+        toBottom.addActionListener(e -> {
+           EditorArea.getInstance().shapeToBottom(t);
+        });
+        this.add(toBottom);
+        
+        
+        for(int i=0;i<this.getComponents().length;i++) {
+			this.getComponent(i).setVisible(false);
+		}
+        
     }
     
+    
     private void changeX() {
-    	commander.setCommand(new SetXCommand(t,xCoordField));
-    	commander.runCommand();
+    	for(TShape shape:shapes) {
+    		if(shape.isSelected()) {
+    			commander.setCommand(new SetXCommand(shape,xCoordField,t.getCenterX()));
+    			commander.runCommand();
+    		}
+    	}
     }
     private void changeY() {
-    	commander.setCommand(new SetYCommand(t,yCoordField));
-    	commander.runCommand();
+    	for(TShape shape:shapes) {
+    		if(shape.isSelected()) {
+    			commander.setCommand(new SetYCommand(shape,yCoordField,t.getCenterY()));
+    			commander.runCommand();
+    		}
+    	}
     }
 
     private void changeSize() {
-    	commander.setCommand(new SetSizeCommand(t,sizeField));
-    	commander.runCommand();
+    	for(TShape shape:shapes) {
+    		if(shape.isSelected()) {
+    			commander.setCommand(new SetSizeCommand(shape,sizeField));
+    			commander.runCommand();
+    		}
+    	}
     }
     
 	@Override
 	public void update(Observable o) {
 		if(o==null)return;
+		if(o instanceof TSelection) {
+			return;
+		}
 		//TShape가 업데이트 되었을 때 해당 객체의 값을 받아옴
+		
 		t=(TShape)o;
+		
+		if(!shapes.contains(t)) {
+			shapes.add(t);
+		}
+		
 		//System.out.println(t.getCenterX());
 		
 		sizeField.setText(""+t.getSize());
 		currentColor=t.getShapeColor();
-		check.setSelected(t.isSelected());
+		//check.setSelected(t.isSelected());
 		
 		xCoordField.setText(""+t.getCenterX());
 		yCoordField.setText(""+t.getCenterY());
 		
+		
+		if(t.isSelected()==false) {
+			
+			for(int i=0;i<SettingArea.getInstance().getComponents().length;i++) {
+				SettingArea.getInstance().getComponent(i).setVisible(false);
+			}
+			
+		}else {
+			for(int i=0;i<SettingArea.getInstance().getComponents().length;i++) {
+				SettingArea.getInstance().getComponent(i).setVisible(true);
+			}
+		}
 	}
     
 

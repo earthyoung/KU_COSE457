@@ -5,14 +5,16 @@ import models.*;
 
 public class SetXCommand extends commandRoot{
 
-	public SetXCommand(TShape tshape, JTextField field) {
+	int centerX=0;
+	public SetXCommand(TShape tshape, JTextField field , int center) {
 		super(tshape, field);
+		centerX=center;
 		// TODO Auto-generated constructor stub
 	}
 
 	
 	public void execute() {
-		shape.setNewCenter(Integer.parseInt(this.tfield.getText()),shape.getCenterY());
+		shape.setNewCenter(Integer.parseInt(this.tfield.getText())+shape.getCenterX()-centerX,shape.getCenterY());
 	}
 	
 }
