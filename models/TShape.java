@@ -13,7 +13,9 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.List;
 
+import controller.CanvasInvoker;
 import controller.EditorArea;
+import controller.SetXYCommand;
 import controller.SettingArea;
 
 import java.util.ArrayList;
@@ -35,6 +37,11 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
     protected Shape shape; // 점의 집합으로 그림을 그리는 JDK에서 만들어 넣는 2차원 그림을 그릴 수 있는 일반적인 형태
     private AffineTransform affineTransform;
     private TAnchor anchors;
+
+    public int bx=0;
+	public int by=0;
+	
+	public boolean flag=false;
 
     // setters and getters : 속성을 단순 변경하거나 읽는 것들, 직접 노출하지 않고 사용
     public boolean isSelected() {
@@ -174,12 +181,22 @@ abstract public class TShape implements Serializable, Cloneable, Observable {
 
     public abstract void prepareDrawing(int x, int y);
     public abstract void keepDrawing(int x, int y);
+    
     public void addPoint(int x, int y) {}
 
     public void finalize(int x, int y) {
         this.shape = this.affineTransform.createTransformedShape(this.shape);
         this.affineTransform.setToIdentity(); // 초기화
+        
+        if(flag) {
+        CanvasInvoker invoker=new CanvasInvoker();
+    	SetXYCommand xycommand=new SetXYCommand(this,bx,by);
+    	invoker.setCommand(xycommand);
+    	invoker.runCommand();
+        }
         notifyObservers();
+        
+        
         //System.out.println(this.shape.getBounds2D().getMaxX()+","+this.shape.getBounds2D().getMaxY());
     }
     @Override

@@ -68,8 +68,6 @@ public class Constants {
     public enum EEditMenu{
         eUndo("실행 취소"),
         eRedo("다시 실행"),
-        eDelete("전체 삭제"),
-        eDeleteOne("삭제하기"),
         eCopy("복사하기"),
         ePaste("붙여넣기"),
         eGroup("전체 그룹묶기"),
