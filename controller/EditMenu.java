@@ -15,7 +15,8 @@ public class EditMenu extends JMenu {
     private static final long serialVersionUID = 1L;
 
     private EditorArea editorArea;
-
+    private CanvasInvoker invoker=new CanvasInvoker();
+    
     public EditMenu(String title) {
         super(title);
 
@@ -36,13 +37,7 @@ public class EditMenu extends JMenu {
                 EditMenu.setMnemonic(KeyEvent.VK_Y);
                 key = KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK);
                 EditMenu.setAccelerator(key);
-            }
-
-            if(eEditMenu.equals(eEditMenu.eDeleteOne)) {
-                EditMenu.setMnemonic(KeyEvent.VK_X);
-                key = KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK);
-                EditMenu.setAccelerator(key);
-            }
+            }        
 
             if(eEditMenu.equals(eEditMenu.eCopy)) {
                 EditMenu.setMnemonic(KeyEvent.VK_C);
@@ -84,12 +79,12 @@ public class EditMenu extends JMenu {
 
     // 실행취소
     public void undo() {
-        this.editorArea.undoShape();
+        invoker.undo();
     }
 
     // 다시 실행
     public void redo() {
-        this.editorArea.redoShape();
+    	invoker.redo();
     }
 
     // 전체 삭제하기
@@ -113,11 +108,6 @@ public class EditMenu extends JMenu {
         this.editorArea.paste();
     }
 
-    // 삭제하기
-    public void deleteOne() {
-        this.editorArea.delete();
-    }
-
     public void groupAll() {
         this.editorArea.groupAll();
     }
@@ -134,14 +124,10 @@ public class EditMenu extends JMenu {
                 undo();
             } else if (e.getActionCommand().equals(EEditMenu.eRedo.name())) { // 그 전 상태
                 redo();
-            } else if (e.getActionCommand().equals(EEditMenu.eDelete.name())) {
-                delete();
             } else if (e.getActionCommand().equals(EEditMenu.eCopy.name())) {
                 copy();
             } else if (e.getActionCommand().equals(EEditMenu.ePaste.name())) {
                 paste();
-            } else if (e.getActionCommand().equals(EEditMenu.eDeleteOne.name())) {
-                deleteOne();
             } else if(e.getActionCommand().equals(EEditMenu.eGroup.name())) {
                 groupAll();
             }else if(e.getActionCommand().equals(EEditMenu.eUnGroup.name())) {
@@ -149,5 +135,4 @@ public class EditMenu extends JMenu {
             }
         }
     }
-
 }

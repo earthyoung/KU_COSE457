@@ -28,12 +28,14 @@ public class TEllipse extends TShape {
     public void prepareDrawing(int x, int y) {
         Ellipse2D ellipse = (Ellipse2D) this.shape;
         ellipse.setFrame(x, y, 0, 0);
+
     }
 
     @Override
     public void keepDrawing(int x, int y) {
         Ellipse2D ellipse = (Ellipse2D) this.shape;
         ellipse.setFrame(ellipse.getX(), ellipse.getY(), x - ellipse.getX(), y - ellipse.getY());
+
     }
 
 }

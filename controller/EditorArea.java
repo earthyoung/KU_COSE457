@@ -16,44 +16,50 @@ import java.awt.image.BufferedImage;
 import java.io.Serial;
 import java.security.Key;
 import java.util.Vector;
-
+import java.util.Stack;
+import java.util.Stack;
 
 public class EditorArea extends JPanel {
-
+	
     // attributes
     @Serial
     private static final long serialVersionUID = 1L;
-
+    
     // components
     private Vector<TShape> shapes;
     private BufferedImage bufferedImage;
     private Graphics2D graphics2DBufferedImage;
     private boolean bUpdated;
-
-    private Vector<TShape> deleteShape; // 삭제 한 도형들
+    
+    //private Vector<TShape> deleteShape; // 삭제 한 도형들
     private Vector<TShape> closedShape; // 닫기 전 도형들
-
+    private Stack<TShape> deleteShape= new Stack<>();
+    
     // association attribute
     private Constants.ETools selectedTool;
     private Vector<TShape> selectedShape;
     private TShape currentShape;
     private Transformer transformer;
-
+    
+    Stack<Command> undoList= new Stack<>();
+    Stack<Command> redoList= new Stack<>();
+    
+    private CanvasInvoker invoker=new CanvasInvoker();
     private static EditorArea instance;
-
+    
     public static EditorArea getInstance() {
         if (instance == null) {
             instance = new EditorArea();
         }
         return instance;
     }
-
+    
     // working variables
     private enum EDrawingState {
         eIdle, e2PointTransformation, eNPointTransformation,
     }
     EDrawingState eDrawingState;
-
+    
     // Constructor
     private EditorArea() {
         this.setBackground(Color.WHITE);
@@ -69,7 +75,6 @@ public class EditorArea extends JPanel {
         this.addMouseWheelListener(mouseHandler);
 
         // 추가
-        this.deleteShape = new Vector<>();
         this.closedShape = new Vector<>();
         this.images = new Vector<>();
     }
@@ -109,6 +114,7 @@ public class EditorArea extends JPanel {
         this.selectedTool = selectedTool;
     }
 
+    
     // Overriding
     public void paint(Graphics graphics) {
         super.paint(graphics);
@@ -127,6 +133,9 @@ public class EditorArea extends JPanel {
         if (selectedTool == Constants.ETools.eSelection) {
             currentShape = onShape(x, y);
             if (currentShape != null) {
+            	currentShape.bx=currentShape.getCenterX();
+            	currentShape.by=currentShape.getCenterY();
+            	currentShape.flag=true;
                 EAnchors eAnchor = currentShape.getSelectedAnchor();
                 if (eAnchor == EAnchors.eMove) { // move : 3단계 필요 (press->drag ->release)
                     this.transformer = new Mover(this.currentShape);
@@ -166,14 +175,10 @@ public class EditorArea extends JPanel {
         // erase
         this.currentShape.draw(this.graphics2DBufferedImage);
         
-        
         // draw
-        
         this.transformer.keepTransforming(x, y);
-        
         this.currentShape.draw(this.graphics2DBufferedImage);
         this.getGraphics().drawImage(this.bufferedImage, 0, 0, this);
-        
         
     }
 
@@ -213,7 +218,6 @@ public class EditorArea extends JPanel {
         			 shape.setSelected(false);
         		 }
         	}
-        	
         	//x y width height
         }
         this.currentShape.finalize(this.getX(),this.getY());
@@ -226,9 +230,7 @@ public class EditorArea extends JPanel {
                 return shape;
             }
         }
-        
         return null;
-        
     }
 
     private void changeSelection(int x, int y) {
@@ -313,7 +315,6 @@ public class EditorArea extends JPanel {
     public void shapeToBack(TShape tshape) {
     	if(this.shapes.contains(tshape)) {
     		int i=this.shapes.indexOf(tshape);
-    		
     		if(i>0) {
     			swapShape(tshape,this.shapes.get(i-1));
     		}
@@ -332,7 +333,14 @@ public class EditorArea extends JPanel {
     	}
     }
     
-
+    public TShape getTop() {
+    	return shapes.get(this.shapes.size()-1);
+    }
+    
+    public TShape getBottom() {
+    	return shapes.get(0);
+    }
+    
     /////////////////////////////////////////////////////////
     ////////////////////// 추가 기능 //////////////////////////
     /////////////////////////////////////////////////////////
@@ -413,40 +421,19 @@ public class EditorArea extends JPanel {
         this.repaint();
     }
 
-    // 실행취소
-    public void undoShape() {
-        if (this.shapes.size() - 1 > -1) {
-            this.deleteShape.add(this.shapes.get(this.shapes.size() - 1));
-            this.shapes.remove(this.shapes.size() - 1);
-            this.repaint(); // 다시 그리기
-        } else {
-            JOptionPane.showMessageDialog(null, "모두 실행 취소되었습니다.");
-        }
-    }
-
-    // 다시 실행
-    public void redoShape() {
-        if (this.deleteShape.size() - 1 > -1) {
-            this.shapes.add(this.deleteShape.get(this.deleteShape.size() - 1));
-            this.deleteShape.remove(this.deleteShape.size() - 1);
-            this.repaint(); // 다시 그리기
-        } else {
-            JOptionPane.showMessageDialog(null, "모두 실행되었습니다.");
-        }
-    }
 
     // 전체 삭제하기
     public void clearShapes() {
-        this.deleteShape = new Vector<TShape>();
+        this.deleteShape = new Stack<>();
         for (TShape shape : this.shapes) {
-            this.deleteShape.add(shape);
+            this.deleteShape.push(shape);
         }
         this.shapes.clear();
         this.repaint();
     }
 
     // 선택된 도형 삭제하기
-    public void delete() {
+   /* public void delete() {
         Vector<TShape> toBeDeletedShape = new Vector<>();
         for(TShape shape : this.selectedShape) {
             if(!this.deleteShape.contains(shape)) {
@@ -458,6 +445,23 @@ public class EditorArea extends JPanel {
             this.shapes.remove(shape);
         }
         this.repaint();
+    }*/
+    
+    public void delete(TShape shape) {
+    	if(!deleteShape.contains(shape)) {
+    	deleteShape.push(shape);
+    	this.shapes.remove(shape);
+    	this.repaint();
+    	}
+    	
+    }
+    
+    public void undelete() {
+    	if(!deleteShape.isEmpty()) {
+    		TShape temp=deleteShape.pop();
+    		this.shapes.add(temp);
+    		this.repaint();
+    	}
     }
 
     // 마우스 왼쪽 버튼 누르면 특정 도형 삭제
@@ -466,17 +470,17 @@ public class EditorArea extends JPanel {
         if(shape != null) {
             int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-//                if(!this.deleteShape.contains(shape)) {
-//                    this.deleteShape.add(shape);
-//                }
-//                this.shapes.remove(shape);
-                delete();
+
+                for(TShape dshape : this.selectedShape) {
+                	DeleteShapeCommand delCommand=new DeleteShapeCommand(dshape);
+                	invoker.setCommand(delCommand);
+                	invoker.runCommand();
+                }
                 this.repaint(); // 다시 그리기
             } else {
                 JOptionPane.showMessageDialog(null, "삭제 취소되었습니다.");
             }
         }
-
     }
 
     // 붙여넣기
@@ -484,7 +488,6 @@ public class EditorArea extends JPanel {
         if(copyShape != null) {
             this.setUpdated(true);
             this.shapes.add(this.copyShape); // Vector add
-
             this.selectedShape.clear();
             this.selectedShape.add(this.copyShape);
             this.selectedShape.get(0).setSelected(true);

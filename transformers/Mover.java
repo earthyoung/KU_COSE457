@@ -12,6 +12,7 @@ public class Mover extends Transformer {
     public void prepare(int x, int y) {
         this.px = x;
         this.py = y;
+      
     }
 
     @Override
@@ -21,8 +22,9 @@ public class Mover extends Transformer {
         this.py = y;
     }
 
+    
     @Override
     public void finalize(int x, int y) {
-
+    	
     }
 }

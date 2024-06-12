@@ -28,13 +28,14 @@ public class TRectangle extends TShape {
     public void prepareDrawing(int x, int y) {
         Rectangle rectangle = (Rectangle) this.shape;
         rectangle.setBounds(x,y,0,0);
+
     }
 
     @Override
     public void keepDrawing(int x, int y) {
         Rectangle rectangle = (Rectangle) this.shape;
         rectangle.setSize(x-rectangle.x,y-rectangle.y);
-        
+
     }
 
    
