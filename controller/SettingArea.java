@@ -19,7 +19,6 @@ private static final long serialVersionUID = 1L;
 	TShape t;
 	private Vector<TShape> shapes=new Vector<>();
 	
-	
 	public CanvasInvoker commander=new CanvasInvoker();
 
 	private static SettingArea instance;
@@ -36,7 +35,6 @@ private static final long serialVersionUID = 1L;
     private JTextField yCoordField;
     private Color currentColor;
     private Color fillColor;
-    private JCheckBox check;
    
     private SettingArea() {
  
@@ -55,7 +53,6 @@ private static final long serialVersionUID = 1L;
                     	commander.runCommand();
             		}
             	}
-            	
             }
         });
         this.add(colorPickerButton);
@@ -63,7 +60,7 @@ private static final long serialVersionUID = 1L;
         this.add(new JLabel("채우기 색:"));
         JButton fillColorPickerButton = new JButton("색상 선택");
         fillColorPickerButton.addActionListener(e -> {
-            Color selectedColor = JColorChooser.showDialog(null, "색상 선택", currentColor); // 초기 색상을 검은색으로 설정
+            Color selectedColor = JColorChooser.showDialog(null, "색상 선택", fillColor); // 초기 색상을 검은색으로 설정
             if (selectedColor != null) {
                 // 여기에서 선택된 색상을 사용하는 로직을 구현합니다.
             	for(TShape shape:shapes) {
@@ -107,37 +104,36 @@ private static final long serialVersionUID = 1L;
             }
         });
         this.add(yCoordField);
-        /*
-        check= new JCheckBox("선택",true);
-        check.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-        	t.setSelected(check.isSelected());
-        	}
-        });
-        this.add(check);
-        */
+        
         JButton toFront = new JButton("앞으로");
         toFront.addActionListener(e -> {
-           EditorArea.getInstance().shapeToFront(t);
+        	Command temp=new ToFrontCommand(t);
+        	commander.setCommand(temp);  			
+			commander.runCommand();
         });
         this.add(toFront);
         
         JButton toBack = new JButton("뒤로");
         toBack.addActionListener(e -> {
-           EditorArea.getInstance().shapeToBack(t);
+        	Command temp=new ToBackCommand(t);
+        	commander.setCommand(temp);  			
+			commander.runCommand();
         });
         this.add(toBack);
         
         JButton toTop = new JButton("맨 앞으로");
         toTop.addActionListener(e -> {
-           EditorArea.getInstance().shapeToTop(t);
+        	Command temp=new ToTopCommand(t);
+        	commander.setCommand(temp);  			
+			commander.runCommand();
         });
         this.add(toTop);
         
         JButton toBottom = new JButton("맨 뒤로");
         toBottom.addActionListener(e -> {
-           EditorArea.getInstance().shapeToBottom(t);
+        	Command temp=new ToBottomCommand(t);
+        	commander.setCommand(temp);  			
+			commander.runCommand();
         });
         this.add(toBottom);
         
@@ -145,22 +141,24 @@ private static final long serialVersionUID = 1L;
         for(int i=0;i<this.getComponents().length;i++) {
 			this.getComponent(i).setVisible(false);
 		}
-        
     }
     
     
     private void changeX() {
     	for(TShape shape:shapes) {
     		if(shape.isSelected()) {
-    			commander.setCommand(new SetXCommand(shape,xCoordField,t.getCenterX()));
+    			Command temp=new SetXCommand(shape,Integer.parseInt(xCoordField.getText()),t.getCenterX());
+    			commander.setCommand(temp);  			
     			commander.runCommand();
     		}
     	}
     }
+    
     private void changeY() {
     	for(TShape shape:shapes) {
     		if(shape.isSelected()) {
-    			commander.setCommand(new SetYCommand(shape,yCoordField,t.getCenterY()));
+    			Command temp=new SetYCommand(shape,Integer.parseInt(yCoordField.getText()),t.getCenterY());
+    			commander.setCommand(temp);
     			commander.runCommand();
     		}
     	}
@@ -169,11 +167,13 @@ private static final long serialVersionUID = 1L;
     private void changeSize() {
     	for(TShape shape:shapes) {
     		if(shape.isSelected()) {
-    			commander.setCommand(new SetSizeCommand(shape,sizeField));
+    			Command temp=new SetSizeCommand(shape,Float.parseFloat(sizeField.getText()));
+    			commander.setCommand(temp);
     			commander.runCommand();
     		}
     	}
     }
+    
     
 	@Override
 	public void update(Observable o) {
@@ -193,6 +193,7 @@ private static final long serialVersionUID = 1L;
 		
 		sizeField.setText(""+t.getSize());
 		currentColor=t.getShapeColor();
+		fillColor=t.getShapefillColor();
 		//check.setSelected(t.isSelected());
 		
 		xCoordField.setText(""+t.getCenterX());
