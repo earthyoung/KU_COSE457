@@ -3,14 +3,24 @@ package controller;
 import models.*;
 import javax.swing.*;
 
-public class SetSizeCommand extends commandRoot{
+public class SetSizeCommand implements Command{
 	
-	public SetSizeCommand(TShape tshape, JTextField field) {
-		super(tshape, field);
+	float originalSize;
+	float size;
+	TShape shape;
+	public SetSizeCommand(TShape tshape, float Size) {
+		this.shape=tshape;
+		this.size=Size;
+		originalSize=shape.getSize();
 		// TODO Auto-generated constructor stub
 	}
 
 	public void execute() {
-		this.shape.setSize(Float.parseFloat(this.tfield.getText()));
+		this.shape.setSize(size);
 	}
+	
+	public void unexecute() {
+		this.shape.setSize(originalSize);
+	}
+
 }

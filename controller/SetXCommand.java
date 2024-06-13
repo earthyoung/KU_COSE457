@@ -1,20 +1,28 @@
 package controller;
-import javax.swing.JTextField;
 
 import models.*;
 
-public class SetXCommand extends commandRoot{
+public class SetXCommand implements Command{
 
 	int centerX=0;
-	public SetXCommand(TShape tshape, JTextField field , int center) {
-		super(tshape, field);
+	int originalX=0;
+	TShape shape;
+	int coord=0;
+	public SetXCommand(TShape tshape, int x , int center) {
+		shape=tshape;
 		centerX=center;
+		originalX=tshape.getCenterX();
+		coord=x;
 		// TODO Auto-generated constructor stub
 	}
 
 	
 	public void execute() {
-		shape.setNewCenter(Integer.parseInt(this.tfield.getText())+shape.getCenterX()-centerX,shape.getCenterY());
+		shape.setNewCenter(coord+shape.getCenterX()-centerX,shape.getCenterY());
+	}
+	
+	public void unexecute() {
+		shape.setNewCenter(originalX,shape.getCenterY());
 	}
 	
 }
